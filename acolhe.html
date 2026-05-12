@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acolhe.app — Você não precisa estar sozinho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --terra: #c4714a;
+      --terra-light: #e8a07a;
+      --terra-dark: #8f4a2e;
+      --bege: #f5ede4;
+      --bege-dark: #ede0d4;
+      --musgo: #5a6e52;
+      --musgo-light: #8a9e82;
+      --creme: #faf6f1;
+      --texto: #2c2018;
+      --texto-suave: #6b5a4e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--creme);
+      color: var(--texto);
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(250, 246, 241, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(196, 113, 74, 0.1);
+    }
+
+    .logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--terra);
+      letter-spacing: -0.02em;
+    }
+
+    .logo span {
+      color: var(--musgo);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .nav-btn {
+      background: var(--terra);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .nav-btn:hover {
+      background: var(--terra-dark);
+      transform: translateY(-1px);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(196, 113, 74, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 20% 80%, rgba(90, 110, 82, 0.07) 0%, transparent 70%);
+    }
+
+    .hero-circle {
+      position: absolute;
+      right: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196, 113, 74, 0.12) 0%, transparent 70%);
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-50%) scale(1.08); opacity: 1; }
+    }
+
+    .hero-content {
+      max-width: 680px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(90, 110, 82, 0.12);
+      color: var(--musgo);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--texto-suave);
+      line-height: 1.7;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+
+    .btn-primary {
+      background: var(--terra);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--terra-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(196, 113, 74, 0.3);
+    }
+
+    .btn-secondary {
+      color: var(--texto-suave);
+      font-size: 0.95rem;
+      font-weight: 400;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+
+    .btn-secondary:hover { color: var(--terra); }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(196, 113, 74, 0.15);
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1s forwards;
+    }
+
+    .stat-item { text-align: left; }
+
+    .stat-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--terra);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--texto-suave);
+      font-weight: 300;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTION BASE */
+    section {
+      padding: 6rem 2rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--musgo);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    /* O QUE É */
+    .what {
+      background: var(--bege);
+    }
+
+    .what-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .what-text p {
+      font-size: 1.05rem;
+      color: var(--texto-suave);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 1.2rem;
+    }
+
+    .what-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .circle-visual {
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--terra-light), var(--terra));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: breathe 5s ease-in-out infinite;
+    }
+
+    .circle-visual::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      border: 1px solid rgba(196, 113, 74, 0.2);
+      animation: breathe 5s ease-in-out infinite reverse;
+    }
+
+    .circle-visual::after {
+      content: '';
+      position: absolute;
+      inset: -40px;
+      border-radius: 50%;
+      border: 1px solid rgba(196, 113, 74, 0.1);
+    }
+
+    .circle-icon {
+      font-size: 5rem;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+    }
+
+    /* COMO FUNCIONA */
+    .how {
+      background: var(--creme);
+    }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .step {
+      padding: 2rem;
+      border-radius: 20px;
+      background: white;
+      border: 1px solid rgba(196, 113, 74, 0.1);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .step:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(196, 113, 74, 0.12);
+      border-color: rgba(196, 113, 74, 0.25);
+    }
+
+    .step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: rgba(196, 113, 74, 0.15);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .step-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .step h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 0.7rem;
+      color: var(--texto);
+    }
+
+    .step p {
+      font-size: 0.9rem;
+      color: var(--texto-suave);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* FEATURES */
+    .features {
+      background: var(--bege-dark);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      padding: 1.8rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(196, 113, 74, 0.08);
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      background: white;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .feature-card h4 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* PARA QUEM */
+    .forwhom {
+      background: var(--creme);
+    }
+
+    .tags-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 2.5rem;
+    }
+
+    .tag {
+      padding: 0.7rem 1.4rem;
+      border-radius: 100px;
+      font-size: 0.95rem;
+      font-weight: 400;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .tag-terra {
+      background: rgba(196, 113, 74, 0.1);
+      color: var(--terra-dark);
+      border: 1px solid rgba(196, 113, 74, 0.2);
+    }
+
+    .tag-terra:hover {
+      background: var(--terra);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .tag-musgo {
+      background: rgba(90, 110, 82, 0.1);
+      color: var(--musgo);
+      border: 1px solid rgba(90, 110, 82, 0.2);
+    }
+
+    .tag-musgo:hover {
+      background: var(--musgo);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .tag-bege {
+      background: var(--bege);
+      color: var(--texto-suave);
+      border: 1px solid rgba(196, 113, 74, 0.1);
+    }
+
+    .tag-bege:hover {
+      background: var(--bege-dark);
+      transform: translateY(-2px);
+    }
+
+    /* CTA */
+    .cta {
+      background: var(--terra);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 60%);
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 1.2rem;
+    }
+
+    .cta h2 em {
+      font-style: italic;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .cta p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--terra);
+      padding: 1rem 2.5rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--texto);
+      color: rgba(255,255,255,0.6);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-logo span {
+      color: var(--terra-light);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .footer-mission {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      max-width: 400px;
+      margin: 0.5rem auto 2rem;
+      font-weight: 300;
+    }
+
+    .footer-bottom {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .what-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .what-visual { display: none; }
+      .how-steps { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .hero-stats { gap: 1.5rem; }
+      nav { padding: 1rem 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .hero-stats { flex-direction: column; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">acolhe<span>.app</span></div>
+    <a href="#entrar" class="nav-btn">Entrar agora</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-circle"></div>
+    <div class="hero-content">
+      <span class="hero-tag">💚 Gratuito · Anônimo · Sem julgamento</span>
+      <h1>Você não precisa<br>estar <em>sozinho</em> assim.</h1>
+      <p>O Acolhe é um espaço seguro para conversar com alguém de verdade — sem interesse, sem julgamento, sem precisar se identificar. Só presença humana, quando você mais precisa.</p>
+      <div class="hero-actions">
+        <a href="#entrar" class="btn-primary">Quero ser acolhido</a>
+        <a href="#como" class="btn-secondary">Como funciona →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Anônimo</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">0</span>
+          <span class="stat-label">Custo para usar</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">24h</span>
+          <span class="stat-label">Disponível</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- O QUE É -->
+  <section class="what">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="section-label">O que é</span>
+          <h2 class="section-title">Um lugar para <em>falar</em><br>sem medo.</h2>
+          <p>O Acolhe conecta pessoas que estão passando por momentos difíceis com outras que também precisam — ou que simplesmente querem ouvir de verdade.</p>
+          <p>Sem perfis expostos. Sem algoritmo de engajamento. Sem interesses ocultos. Só duas pessoas, um chat, e a possibilidade de se sentir um pouco menos sozinho.</p>
+          <p>Criado por quem já esteve lá.</p>
+        </div>
+        <div class="what-visual reveal">
+          <div class="circle-visual">
+            <span class="circle-icon">🫂</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="how" id="como">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Como funciona</span>
+        <h2 class="section-title">Três passos.<br><em>Sem complicação.</em></h2>
+      </div>
+      <div class="how-steps">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <span class="step-icon">🎭</span>
+          <h3>Entre anônimo</h3>
+          <p>Sem nome, sem foto, sem história que você não queira contar. Você escolhe quem ser aqui dentro.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">02</div>
+          <span class="step-icon">🎯</span>
+          <h3>Filtre o que faz sentido</h3>
+          <p>Escolha gênero, faixa etária, distância — ou não filtre nada. Você controla com quem quer conversar.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">03</div>
+          <span class="step-icon">💬</span>
+          <h3>Converse de verdade</h3>
+          <p>Por texto ou áudio. No seu tempo. Sem pressa, sem script, sem expectativa além de presença real.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">O que oferece</span>
+        <h2 class="section-title">Tudo que você precisa.<br><em>Nada que você não quer.</em></h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <span class="feature-icon">🔒</span>
+          <h4>Anonimato total</h4>
+          <p>Sem cadastro com dados pessoais. Ninguém sabe quem você é — e isso é intencional.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">🎙️</span>
+          <h4>Texto ou voz</h4>
+          <p>Às vezes é mais fácil falar do que escrever. As duas opções estão sempre disponíveis.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">🛡️</span>
+          <h4>Você no controle</h4>
+          <p>Bloqueie, encerre a conversa, denuncie. O espaço é seu e você decide o que acontece nele.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">📍</span>
+          <h4>Filtro de distância</h4>
+          <p>Prefere não falar com alguém da sua cidade? Configure. Ninguém vai te reconhecer.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">🚫</span>
+          <h4>Sem interesse oculto</h4>
+          <p>Sem publicidade, sem venda, sem captação de dados para terceiros. Ponto final.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">🌱</span>
+          <h4>Sempre gratuito</h4>
+          <p>Acesso completo para todo mundo, para sempre. Porque sofrimento não tem preço de entrada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARA QUEM -->
+  <section class="forwhom">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Para quem é</span>
+        <h2 class="section-title">Para quem está<br><em>passando por isso.</em></h2>
+      </div>
+      <div class="tags-cloud reveal">
+        <span class="tag tag-terra">Solidão</span>
+        <span class="tag tag-musgo">Separação</span>
+        <span class="tag tag-bege">Ansiedade</span>
+        <span class="tag tag-terra">Luto</span>
+        <span class="tag tag-musgo">Abandono</span>
+        <span class="tag tag-bege">Querer falar</span>
+        <span class="tag tag-terra">Noites difíceis</span>
+        <span class="tag tag-musgo">Sentir-se invisível</span>
+        <span class="tag tag-bege">Precisar de presença</span>
+        <span class="tag tag-terra">Não ter com quem conversar</span>
+        <span class="tag tag-musgo">Querer ouvir alguém</span>
+        <span class="tag tag-bege">Tristeza sem motivo</span>
+        <span class="tag tag-terra">Fim de relacionamento</span>
+        <span class="tag tag-musgo">Sentir que ninguém entende</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="entrar">
+    <div class="container">
+      <div class="cta-content reveal">
+        <h2>Você merece ser<br><em>acolhido.</em></h2>
+        <p>Não importa o que está sentindo, não importa a hora. Alguém está aqui, do outro lado, também precisando de conexão real.</p>
+        <a href="#" class="btn-white">Entrar agora — é gratuito</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">acolhe<span>.app</span></div>
+    <p class="footer-mission">Criado por alguém que já esteve sozinho e acredita que ninguém deveria passar por isso sem ter com quem falar.</p>
+    <div class="footer-bottom">
+      © 2025 Acolhe.app · Gratuito · Anônimo · Feito com cuidado
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

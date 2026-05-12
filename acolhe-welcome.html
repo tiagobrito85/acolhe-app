@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acolhe.app — Bem-vindo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --terra: #c4714a;
+      --terra-light: #e8a07a;
+      --musgo: #5a6e52;
+      --creme: #faf6f1;
+      --texto: #2c2018;
+      --texto-suave: #6b5a4e;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--creme);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* FUNDO */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 40% 40%, rgba(196,113,74,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 70% 70%, rgba(90,110,82,0.06) 0%, transparent 70%);
+    }
+
+    /* ONDAS DE ENTRADA */
+    .ripple-container {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid rgba(196, 113, 74, 0.35);
+      animation: rippleOut 2.4s ease-out forwards;
+    }
+
+    .ripple:nth-child(1) { animation-delay: 0s; }
+    .ripple:nth-child(2) { animation-delay: 0.3s; }
+    .ripple:nth-child(3) { animation-delay: 0.6s; }
+    .ripple:nth-child(4) { animation-delay: 0.9s; }
+
+    @keyframes rippleOut {
+      0%   { width: 0; height: 0; opacity: 0.8; }
+      100% { width: 800px; height: 800px; opacity: 0; }
+    }
+
+    /* CONTAINER CENTRAL */
+    .welcome {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.6rem;
+      text-align: center;
+    }
+
+    /* EMOJI CENTRAL */
+    .emoji-wrap {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--terra-light), var(--terra));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      box-shadow: 0 12px 32px rgba(196, 113, 74, 0.3);
+      opacity: 0;
+      transform: scale(0.4);
+      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+    }
+
+    @keyframes popIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* LOGO */
+    .logo {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--terra);
+      letter-spacing: -0.02em;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: slideUp 0.5s ease 0.8s forwards;
+    }
+
+    .logo span {
+      color: var(--musgo);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    /* FRASE */
+    .frase {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--texto-suave);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: slideUp 0.5s ease 1.1s forwards;
+    }
+
+    /* LINHA DECORATIVA */
+    .linha {
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--terra), transparent);
+      animation: expandLine 0.6s ease 1.4s forwards;
+    }
+
+    @keyframes expandLine {
+      to { width: 120px; }
+    }
+
+    /* NOME DO USUÁRIO */
+    .nome {
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: slideUp 0.5s ease 1.6s forwards;
+    }
+
+    .nome strong {
+      color: var(--terra);
+      font-weight: 500;
+      font-style: normal;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.95rem;
+    }
+
+    @keyframes slideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SAÍDA SUAVE */
+    .welcome.saindo {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: scale(0.96); }
+    }
+
+    /* PARTÍCULAS */
+    .particula {
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--terra);
+      opacity: 0;
+      pointer-events: none;
+      animation: floatUp var(--dur) ease var(--delay) forwards;
+    }
+
+    @keyframes floatUp {
+      0%   { opacity: 0.5; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-120px) scale(0.3); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg"></div>
+
+  <!-- ONDAS -->
+  <div class="ripple-container">
+    <div class="ripple"></div>
+    <div class="ripple"></div>
+    <div class="ripple"></div>
+    <div class="ripple"></div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="welcome" id="welcome">
+    <div class="emoji-wrap">🫂</div>
+    <div class="logo">acolhe<span>.app</span></div>
+    <p class="frase" id="frase">"Você não precisa estar sozinho."</p>
+    <div class="linha"></div>
+    <p class="nome">Bem-vindo, <strong id="nomeUsuario">Vento Azul #347</strong></p>
+  </div>
+
+  <script>
+    // Frases de boas-vindas — troca aleatoriamente a cada entrada
+    const frases = [
+      '"Você não precisa estar sozinho."',
+      '"Aqui há espaço para você."',
+      '"Sem julgamentos. Só presença."',
+      '"Alguém está aqui para ouvir."',
+      '"Você é bem-vindo exatamente como está."',
+      '"Este é um lugar seguro."',
+    ];
+
+    // Exibe frase aleatória
+    document.getElementById("frase").textContent =
+      frases[Math.floor(Math.random() * frases.length)];
+
+    // Nome anônimo do usuário — substitua pelo nome real vindo do backend
+    // Exemplo: document.getElementById("nomeUsuario").textContent = user.anonymous_name;
+    const nomesExemplo = [
+      "Vento Azul #347", "Mar Calmo #512", "Lua Nova #891",
+      "Brisa Leve #203", "Rio Sereno #674"
+    ];
+    document.getElementById("nomeUsuario").textContent =
+      nomesExemplo[Math.floor(Math.random() * nomesExemplo.length)];
+
+    // Partículas flutuantes
+    function criarParticulas() {
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement("div");
+        p.className = "particula";
+        p.style.cssText = `
+          left: ${20 + Math.random() * 60}%;
+          top: ${40 + Math.random() * 30}%;
+          --dur: ${1.5 + Math.random() * 2}s;
+          --delay: ${0.8 + Math.random() * 1.5}s;
+          width: ${3 + Math.random() * 5}px;
+          height: ${3 + Math.random() * 5}px;
+          opacity: ${0.2 + Math.random() * 0.4};
+          background: ${Math.random() > 0.5 ? '#c4714a' : '#5a6e52'};
+        `;
+        document.body.appendChild(p);
+      }
+    }
+
+    criarParticulas();
+
+    // Redireciona para o app após 2.8 segundos
+    // Substitua '#app' pela rota real do seu app
+    setTimeout(() => {
+      document.getElementById("welcome").classList.add("saindo");
+      setTimeout(() => {
+        window.location.href = "acolhe.html"; // <- troque pela sua rota
+      }, 500);
+    }, 2800);
+  </script>
+
+</body>
+</html>

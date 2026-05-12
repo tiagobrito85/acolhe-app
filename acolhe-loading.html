@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acolhe.app — Carregando</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --terra: #c4714a;
+      --terra-light: #e8a07a;
+      --musgo: #5a6e52;
+      --bege: #f5ede4;
+      --creme: #faf6f1;
+      --texto: #2c2018;
+      --texto-suave: #6b5a4e;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--creme);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* FUNDO ANIMADO */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 40%, rgba(196, 113, 74, 0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 70% at 70% 70%, rgba(90, 110, 82, 0.06) 0%, transparent 70%);
+      animation: bgShift 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgShift {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+
+    /* CONTAINER */
+    .loading-container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+      padding: 2rem;
+      text-align: center;
+      max-width: 400px;
+    }
+
+    /* LOGO */
+    .logo {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--terra);
+      letter-spacing: -0.02em;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .logo span {
+      color: var(--musgo);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    /* CÍRCULOS RESPIRANDO */
+    .breath-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .circle-1 {
+      width: 140px;
+      height: 140px;
+      background: rgba(196, 113, 74, 0.06);
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    .circle-2 {
+      width: 110px;
+      height: 110px;
+      background: rgba(196, 113, 74, 0.1);
+      animation: breathe 3s ease-in-out infinite 0.3s;
+    }
+
+    .circle-3 {
+      width: 80px;
+      height: 80px;
+      background: rgba(196, 113, 74, 0.18);
+      animation: breathe 3s ease-in-out infinite 0.6s;
+    }
+
+    .circle-core {
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, var(--terra-light), var(--terra));
+      animation: breathe 3s ease-in-out infinite 0.9s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 8px 24px rgba(196, 113, 74, 0.3);
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+
+    /* FRASES */
+    .phrase-container {
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phrase {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--texto-suave);
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      position: absolute;
+    }
+
+    .phrase.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .phrase.hidden {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+
+    /* BARRA DE PROGRESSO */
+    .progress-wrapper {
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 3px;
+      background: rgba(196, 113, 74, 0.15);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--terra-light), var(--terra));
+      border-radius: 100px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .progress-label {
+      font-size: 0.75rem;
+      color: var(--texto-suave);
+      font-weight: 300;
+      opacity: 0.7;
+    }
+
+    /* PONTINHOS */
+    .dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--terra);
+      opacity: 0.3;
+      animation: dotPulse 1.5s ease-in-out infinite;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TELA PRONTA */
+    .ready {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .ready-icon {
+      font-size: 3rem;
+      animation: bounceIn 0.6s ease forwards;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .ready h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--texto);
+    }
+
+    .ready h2 em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    .btn-entrar {
+      background: var(--terra);
+      color: white;
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-entrar:hover {
+      background: #8f4a2e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(196, 113, 74, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+
+  <!-- TELA DE LOADING -->
+  <div class="loading-container" id="loading">
+    <div class="logo">acolhe<span>.app</span></div>
+
+    <div class="breath-container">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+      <div class="circle circle-core">🫂</div>
+    </div>
+
+    <div class="phrase-container">
+      <p class="phrase visible" id="phrase">Preparando um espaço seguro para você...</p>
+    </div>
+
+    <div class="progress-wrapper">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-label" id="progressLabel">Conectando...</span>
+    </div>
+
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- TELA PRONTA -->
+  <div class="loading-container ready" id="ready">
+    <div class="logo">acolhe<span>.app</span></div>
+    <div class="ready-icon">🫂</div>
+    <h2>Tudo <em>pronto</em>.</h2>
+    <a href="acolhe-welcome.html" class="btn-entrar">Entrar agora</a>
+  </div>
+
+  <script>
+    const frases = [
+      "Preparando um espaço seguro para você...",
+      "Você não precisa estar sozinho.",
+      "Aqui não há julgamentos.",
+      "Alguém do outro lado também está esperando.",
+      "Cuidando de cada detalhe para você...",
+      "Presença real, sem interesse.",
+      "Quase lá. Obrigado pela paciência. 🫂",
+    ];
+
+    const phraseEl = document.getElementById("phrase");
+    const progressFill = document.getElementById("progressFill");
+    const progressLabel = document.getElementById("progressLabel");
+    const loadingEl = document.getElementById("loading");
+    const readyEl = document.getElementById("ready");
+
+    let fraseIndex = 0;
+    let progresso = 0;
+
+    // Troca de frases a cada 4 segundos
+    const trocaFrase = setInterval(() => {
+      phraseEl.classList.remove("visible");
+      phraseEl.classList.add("hidden");
+
+      setTimeout(() => {
+        fraseIndex = (fraseIndex + 1) % frases.length;
+        phraseEl.textContent = frases[fraseIndex];
+        phraseEl.classList.remove("hidden");
+        phraseEl.classList.add("visible");
+      }, 600);
+    }, 4000);
+
+    // Progresso simulado — cresce rápido até 80%, depois devagar
+    const cresceProgresso = setInterval(() => {
+      if (progresso < 80) {
+        progresso += Math.random() * 8;
+      } else if (progresso < 95) {
+        progresso += Math.random() * 1.5;
+      }
+      progresso = Math.min(progresso, 95);
+      progressFill.style.width = progresso + "%";
+    }, 600);
+
+    // -------------------------------------------------------
+    // AQUI É ONDE VOCÊ FAZ A CHAMADA REAL PARA O BACKEND
+    // Troque a URL pelo endpoint real do seu backend
+    // -------------------------------------------------------
+    async function verificarBackend() {
+      try {
+        const res = await fetch("https://SEU-BACKEND.onrender.com/health");
+        if (res.ok) {
+          backendPronto();
+        } else {
+          setTimeout(verificarBackend, 3000);
+        }
+      } catch (e) {
+        // Ainda acordando — tenta de novo em 3 segundos
+        setTimeout(verificarBackend, 3000);
+      }
+    }
+
+    function backendPronto() {
+      clearInterval(trocaFrase);
+      clearInterval(cresceProgresso);
+
+      // Completa a barra
+      progressFill.style.width = "100%";
+      progressLabel.textContent = "Pronto!";
+
+      setTimeout(() => {
+        loadingEl.style.transition = "opacity 0.6s ease";
+        loadingEl.style.opacity = "0";
+
+        setTimeout(() => {
+          loadingEl.style.display = "none";
+          readyEl.style.display = "flex";
+        }, 600);
+      }, 500);
+    }
+
+    // Inicia a verificação
+    verificarBackend();
+  </script>
+</body>
+</html>
